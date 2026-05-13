@@ -57,8 +57,8 @@ body {
 .font-display { font-family: 'Cinzel', serif; }
 .font-body { font-family: 'Outfit', sans-serif; }
 
-.text-glow {
-    text-shadow: 0 0 30px var(--gold-glow), 0 0 60px rgba(200,169,107,0.12);
+.text-cinematic {
+    text-shadow: 0 2px 12px rgba(0,0,0,0.8), 0 0 18px rgba(200,169,107,0.15);
 }
 
 
@@ -120,18 +120,13 @@ body {
     100% { transform: rotate(360deg) scale(1.3); }
 }
 
-/* ═══════════════════════════════════════════════
-   REALITY WARP (Enter button effect)
-   ═══════════════════════════════════════════════ */
-body.falling {
-    animation: realityWarp 2.8s cubic-bezier(.19,1,.22,1) forwards;
+body.waking-up {
+    animation: cinematicWakeUp 4.5s cubic-bezier(.19,1,.22,1) forwards;
 }
 
-@keyframes realityWarp {
-    0%   { filter: blur(0px); transform: scale(1) rotate(0deg); }
-    30%  { filter: blur(6px); transform: scale(1.2) rotate(-5deg); }
-    60%  { filter: blur(12px); transform: scale(1.4) rotate(-10deg); }
-    100% { filter: blur(0px); transform: scale(1) rotate(0deg); }
+@keyframes cinematicWakeUp {
+    0%   { filter: blur(12px) brightness(0.1); transform: scale(1.1); }
+    100% { filter: blur(0px) brightness(1); transform: scale(1); }
 }
 
 /* ═══════════════════════════════════════════════
@@ -236,14 +231,11 @@ body.falling {
     pointer-events: all;
 }
 
-/* Active panels get stronger background for readability */
-.panel.is-active .suit-card,
-.panel.is-active .gift-card,
+/* Active panels get solid translucent background for readability instead of heavy blur */
 .panel.is-active .rsvp__form,
 .panel.is-active .movie-card {
-    background: rgba(20,15,30,0.7);
-    backdrop-filter: blur(24px);
-    -webkit-backdrop-filter: blur(24px);
+    background: rgba(20,15,30,0.78);
+    border: 1px solid rgba(200,169,107,0.1);
 }
 
 /* ─── HERO ─── */
@@ -348,107 +340,52 @@ body.falling {
     margin-bottom: 2.5rem;
 }
 
-.rules__grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1.2rem;
-    max-width: 900px;
+.rules__cinematic {
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+    max-width: 800px;
+    width: 100%;
+    align-items: center;
+}
+
+/* ─── SUIT FLOATING CARDS ─── */
+.suit-floating {
+    position: relative;
+    text-align: center;
+    opacity: 0.8;
+    transition: all 0.8s ease;
+    padding: 2rem;
+    border-bottom: 1px solid rgba(200,169,107,0.1);
     width: 100%;
 }
-
-/* ─── SUIT CARDS ─── */
-.suit-card {
-    position: relative;
-    overflow: hidden;
-    border-radius: 8px;
-    padding: 1.8rem;
-    display: flex; flex-direction: column;
-    justify-content: flex-end;
-    min-height: 220px;
-    background: rgba(255,255,255,0.04);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(200,169,107,0.12);
-    box-shadow: 0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.05);
-    transition: transform 0.6s cubic-bezier(0.23,1,0.32,1), box-shadow 0.6s;
-    transform-style: preserve-3d;
-}
-
-.suit-card::before {
-    content: '';
-    position: absolute; inset: 0;
-    background: linear-gradient(135deg, transparent 40%, rgba(255,255,255,0.06) 50%, transparent 60%);
-    transform: translateX(-100%);
-    transition: transform 0.7s;
-}
-.suit-card:hover::before { transform: translateX(100%); }
-.suit-card:hover {
-    transform: translateY(-6px) rotateX(2deg);
-    box-shadow: 0 20px 50px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.08);
-}
-
-/* Particle burst on hover — pseudo */
-.suit-card::after {
-    content: '';
-    position: absolute; top: 50%; left: 50%;
-    width: 4px; height: 4px;
-    background: var(--gold);
-    border-radius: 50%;
-    opacity: 0;
-    box-shadow:
-        -15px -20px 0 var(--gold),
-        20px -15px 0 var(--gold),
-        -25px 10px 0 var(--gold),
-        15px 25px 0 var(--gold),
-        -10px -30px 0 var(--gold),
-        30px 5px 0 var(--gold);
-    transition: opacity 0.3s, transform 0.5s;
-    transform: scale(0);
-}
-.suit-card:hover::after {
-    opacity: 0.4;
-    transform: scale(3);
+.suit-floating:last-child {
+    border-bottom: none;
 }
 
 .suit-icon {
-    font-size: 2.5rem;
-    margin-bottom: 0.8rem;
-    opacity: 0.5;
-    transition: opacity 0.5s, transform 0.5s;
-}
-.suit-card:hover .suit-icon {
-    opacity: 0.9;
-    transform: scale(1.15);
+    font-size: 3rem;
+    margin-bottom: 0.5rem;
+    color: var(--gold);
+    opacity: 0.6;
+    text-shadow: 0 4px 12px rgba(0,0,0,0.8);
 }
 
 .suit-title {
-    font-size: 1rem;
-    margin-bottom: 0.4rem;
+    font-size: 1.5rem;
+    margin-bottom: 0.8rem;
     text-transform: uppercase;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.2em;
+    color: var(--white);
+    text-shadow: 0 2px 8px rgba(0,0,0,0.8);
 }
 .suit-desc {
-    font-size: 0.8rem;
-    opacity: 0.55;
-    line-height: 1.5;
+    font-size: 1rem;
+    opacity: 0.7;
+    line-height: 1.6;
+    max-width: 500px;
+    margin: 0 auto;
 }
-
-/* Suit colors */
-.suit-card--hearts  { border-color: var(--suit-red); }
-.suit-card--hearts .suit-icon,
-.suit-card--hearts .suit-title { color: var(--suit-red); }
-
-.suit-card--spades  { border-color: rgba(255,255,255,0.15); }
-.suit-card--spades .suit-icon,
-.suit-card--spades .suit-title { color: var(--white); }
-
-.suit-card--diamonds { border-color: var(--suit-red); }
-.suit-card--diamonds .suit-icon,
-.suit-card--diamonds .suit-title { color: var(--suit-red); }
-
-.suit-card--clubs { border-color: rgba(255,255,255,0.15); }
-.suit-card--clubs .suit-icon,
-.suit-card--clubs .suit-title { color: var(--white); }
 
 /* ═══════════════════════════════════════════════
    UNIVERSES SECTION
@@ -499,15 +436,12 @@ body.falling {
 }
 
 .movie-card {
-    background: rgba(255,255,255,0.04);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(255,255,255,0.06);
+    background: rgba(20,15,30,0.6);
+    border: 1px solid rgba(255,255,255,0.02);
     padding: 0.8rem;
     text-align: center;
-    transition: all 0.4s;
-    border-radius: 6px;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+    border-radius: 0;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.8);
 }
 .movie-card:hover {
     background: rgba(200,169,107,0.1);
@@ -540,45 +474,26 @@ body.falling {
     font-size: 0.85rem;
 }
 
-.gifts__grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1.2rem;
-    max-width: 800px;
+.gifts__cinematic {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    max-width: 600px;
     width: 100%;
 }
 
-.gift-card {
-    background: rgba(255,255,255,0.04);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid var(--gold-dim);
-    border-radius: 8px;
-    padding: 1.8rem;
-    text-align: center;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.05);
-    transition: all 0.5s cubic-bezier(0.175,0.885,0.32,1.275);
-}
-.gift-card:hover {
-    transform: scale(1.05) translateY(-6px);
-    box-shadow: 0 16px 45px rgba(200,169,107,0.15), inset 0 1px 0 rgba(255,255,255,0.08);
-    border-color: var(--gold);
+.gift-floating {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.5rem;
+    border-bottom: 1px solid rgba(200,169,107,0.15);
+    background: transparent;
 }
 
-.gift-card__icon { font-size: 2rem; margin-bottom: 0.6rem; }
-.gift-card__name { color: var(--gold); font-size: 1rem; margin-bottom: 0.2rem; }
-.gift-card__desc { font-size: 0.7rem; opacity: 0.35; margin-bottom: 0.8rem; }
-.gift-card__price { font-size: 1.3rem; margin-bottom: 1rem; }
-.gift-card__btn {
-    width: 100%; padding: 0.6rem;
-    background: var(--gold); color: var(--black);
-    border: none; cursor: pointer;
-    text-transform: uppercase;
-    letter-spacing: 0.15em;
-    font-size: 0.65rem;
-    transition: background 0.3s;
-}
-.gift-card__btn:hover { background: var(--white); }
+.gift-icon { font-size: 2rem; opacity: 0.6; }
+.gift-name { color: var(--gold); font-size: 1.2rem; text-shadow: 0 2px 8px rgba(0,0,0,0.8); }
+.gift-price { font-size: 1.2rem; opacity: 0.8; }
 
 /* ═══════════════════════════════════════════════
    COUNTDOWN SECTION
@@ -644,12 +559,9 @@ body.falling {
 .rsvp__form {
     max-width: 550px; width: 100%;
     padding: clamp(2rem, 4vw, 3.5rem);
-    background: rgba(20,15,30,0.5);
-    backdrop-filter: blur(24px);
-    -webkit-backdrop-filter: blur(24px);
-    border: 1px solid var(--gold-dim);
-    border-radius: 8px;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05);
+    background: rgba(20,15,30,0.78);
+    border: 1px solid rgba(200,169,107,0.1);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.8);
 }
 
 .rsvp__title {
@@ -760,40 +672,34 @@ body.falling {
 
     .panel { padding: 0.8rem; }
 
-    .rules__grid {
-        grid-template-columns: repeat(2, 1fr) !important;
+    .rules__cinematic {
+        gap: 1.5rem;
+    }
+    .suit-floating {
+        padding: 1rem;
+    }
+    .suit-icon { font-size: 2rem; }
+    .suit-title { font-size: 1rem; }
+    .suit-desc { font-size: 0.8rem; }
+
+    .gifts__cinematic {
+        gap: 1rem;
+    }
+    .gift-floating {
+        flex-direction: column;
         gap: 0.5rem;
-    }
-    .suit-card {
-        min-height: 130px;
-        padding: 0.8rem;
-        backdrop-filter: none;
-        -webkit-backdrop-filter: none;
-        background: rgba(20, 15, 30, 0.9) !important;
-        justify-content: center;
-        align-items: center;
         text-align: center;
-        box-shadow: none !important;
-        transform: none !important;
     }
-    .suit-icon { font-size: 1.6rem; margin-bottom: 0.4rem; }
-    .suit-title { font-size: 0.75rem; margin-bottom: 0.2rem; }
-    .suit-desc { font-size: 0.65rem; line-height: 1.3; }
-
-    .spiral-bg__img { filter: none; opacity: 0.45; mix-blend-mode: normal; } /* Disable blend and filter for perf, lower opacity */
-    .spiral-bg { animation: rotateSlowly 180s linear infinite; } /* Slower rotation on mobile */
-    .spiral-bg__cat { animation: rotateCounterSlowly 180s linear infinite; }
-
-    .nav-hat-btn { width: 65px; height: 65px; bottom: 1.5rem; }
-
 
     .movies__grid {
         grid-template-columns: repeat(2, 1fr) !important;
     }
 
-    .gifts__grid {
-        grid-template-columns: 1fr !important;
-    }
+    .spiral-bg__img { filter: none; opacity: 0.45; mix-blend-mode: normal; }
+    .spiral-bg { animation: rotateSlowly 180s linear infinite; }
+    .spiral-bg__cat { animation: rotateCounterSlowly 180s linear infinite; }
+
+    .nav-hat-btn { width: 65px; height: 65px; bottom: 1.5rem; }
 
     .gift-card, .rsvp__form, .movie-card {
         backdrop-filter: none;

@@ -69,23 +69,25 @@ const camera = new THREE.PerspectiveCamera(75, innerWidth / innerHeight, 0.1, 10
 const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
 renderer.setSize(innerWidth, innerHeight);
 renderer.setPixelRatio(isMobile ? 1 : Math.min(devicePixelRatio, 2));
+scene.fog = new THREE.FogExp2(0x080808, 0.025);
 
-// ─── SPIRAL TUNNEL (helix curves) ───
-const tunnelGroup = new THREE.Group();
-for (let s = 0; s < 6; s++) {
-    const pts = [];
-    const off = (s / 6) * Math.PI * 2;
-    for (let i = 0; i <= 480; i++) {
-        const t = i / 480;
-        const a = t * 8 * Math.PI * 2 + off;
-        const r = 2 + Math.sin(t * Math.PI) * 1.5;
-        pts.push(new THREE.Vector3(Math.cos(a) * r, Math.sin(a) * r, -t * 80));
-    }
-    const g = new THREE.BufferGeometry().setFromPoints(pts);
-    const m = new THREE.LineBasicMaterial({ color: s % 2 === 0 ? 0xC8A96B : 0x2D1B4E, transparent: true, opacity: 0.12 });
-    tunnelGroup.add(new THREE.Line(g, m));
-}
-scene.add(tunnelGroup);
+// ─── CINEMATIC LIGHTING ───
+const ambientLight = new THREE.AmbientLight(0x111111);
+scene.add(ambientLight);
+
+const mainLight = new THREE.PointLight(0xC8A96B, 1.5, 60);
+mainLight.position.set(2, 2, 2);
+scene.add(mainLight);
+
+const lightingConfigs = [
+    { color: 0xC8A96B, intensity: 1.5, fog: 0x080808 }, // Hero: Low intensity gold
+    { color: 0x8B1A1A, intensity: 2.0, fog: 0x150505 }, // Rules: Dramatic wine/red
+    { color: 0x6B4BCC, intensity: 1.8, fog: 0x0A0515 }, // Universes: Theatrical purple
+    { color: 0xC8A96B, intensity: 1.5, fog: 0x080808 }, // Gifts: Gold
+    { color: 0xFFFFFF, intensity: 0.8, fog: 0x000000 }, // Countdown: Monochromatic
+    { color: 0xC8A96B, intensity: 1.5, fog: 0x080808 }, // RSVP: Gold
+    { color: 0xC8A96B, intensity: 1.5, fog: 0x080808 }  // Outro: Gold
+];
 
 // ─── PARALLAX LAYERS ───
 // Layer 0: Dust (0.3x) — removed on mobile for performance
@@ -108,10 +110,9 @@ const objPerImage = isMobile ? 3 : 6;
 objImages.forEach(src => {
     texLoader.load(src, (tex) => {
         for (let i = 0; i < objPerImage; i++) {
-            const mat = new THREE.MeshBasicMaterial({ 
-                map: tex, transparent: true, opacity: 0.5, 
-                side: THREE.DoubleSide, 
-                blending: THREE.AdditiveBlending 
+            const mat = new THREE.MeshLambertMaterial({ 
+                map: tex, transparent: true, opacity: 0.7, 
+                side: THREE.DoubleSide
             });
             const size = 0.4 + Math.random() * 0.5;
             const mesh = new THREE.Mesh(new THREE.PlaneGeometry(size, size), mat);
@@ -145,8 +146,10 @@ function animate() {
     requestAnimationFrame(animate);
     time += 0.01;
     const pulse = Math.sin(time * 1.5) * 0.12;
-    tunnelGroup.scale.set(1 + pulse, 1 + pulse, 1);
-    tunnelGroup.rotation.z += 0.002;
+    
+    // Animate light position slightly
+    mainLight.position.x = 2 + Math.sin(time) * 1.5;
+    mainLight.position.y = 2 + Math.cos(time * 0.8) * 1.5;
 
     // Parallax: dust 0.3x
     if (!isMobile) {
@@ -200,6 +203,14 @@ function goToPanel(index) {
         onComplete: () => currentPanel.classList.remove('is-active')
     });
 
+    // Dynamic Lighting Transition
+    const targetLight = lightingConfigs[index];
+    if (targetLight) {
+        gsap.to(mainLight.color, { r: (targetLight.color >> 16 & 255)/255, g: (targetLight.color >> 8 & 255)/255, b: (targetLight.color & 255)/255, duration: 2 });
+        gsap.to(mainLight, { intensity: targetLight.intensity, duration: 2 });
+        gsap.to(scene.fog.color, { r: (targetLight.fog >> 16 & 255)/255, g: (targetLight.fog >> 8 & 255)/255, b: (targetLight.fog & 255)/255, duration: 2 });
+    }
+
     // Move camera deeper
     const targetZ = 5 - (index * 12); // Move 12 units per section
     gsap.to(camera.position, { z: targetZ, duration: 1.8, ease: "power2.inOut" });
@@ -218,7 +229,36 @@ function goToPanel(index) {
     gsap.fromTo(nextPanel, 
         { scale: 0.15, opacity: 0 }, 
         { scale: 1, opacity: 1, duration: 1.2, delay: 0.6, ease: "power2.out",
-          onStart: () => nextPanel.classList.add('is-active'),
+          onStart: () => {
+              nextPanel.classList.add('is-active');
+              
+              // WOW Effects & Audio
+              if (index === 4) { // Countdown
+                  document.getElementById('panel-countdown').setAttribute('data-wow','active');
+                  if (typeof audioPlaying !== 'undefined' && audioPlaying && bgMusic) {
+                      gsap.to(bgMusic, { playbackRate: 0.8, volume: 0.4, duration: 2 });
+                  }
+              } else {
+                  document.getElementById('panel-countdown').removeAttribute('data-wow');
+                  if (typeof audioPlaying !== 'undefined' && audioPlaying && bgMusic) {
+                      gsap.to(bgMusic, { playbackRate: 1.0, volume: 1.0, duration: 2 });
+                  }
+              }
+
+              if (index === 5) { // Outro
+                  const box = document.getElementById('card-explosion');
+                  if (box && box.children.length === 0) { // once
+                      for (let i = 0; i < 20; i++) {
+                          const c = document.createElement('div');
+                          c.textContent = ['♠','♥','♦','♣'][i%4];
+                          c.style.cssText = `position:absolute;font-size:${1.5+Math.random()*2}rem;color:${i%2===0?'var(--gold)':'var(--suit-red)'};opacity:0;left:50%;top:50%;pointer-events:none;`;
+                          box.appendChild(c);
+                          gsap.to(c, { x: (Math.random()-0.5)*600, y: (Math.random()-0.5)*400, rotation: Math.random()*720-360, opacity: 0.6, duration: 2+Math.random(), ease: "power2.out" });
+                          gsap.to(c, { opacity: 0, duration: 1, delay: 2+Math.random() });
+                      }
+                  }
+              }
+          },
           onComplete: () => {
               currentPanelIndex = index;
               isAnimating = false;
@@ -233,9 +273,7 @@ function goToPanel(index) {
 
 // ─── WOW #1: ENTER BUTTON — REALITY WARP ───
 document.getElementById('enter-btn').addEventListener('click', () => {
-    document.body.classList.add('falling');
-    // Dramatic spin into the tunnel
-    gsap.to(tunnelGroup.rotation, { z: "+=4", duration: 2.5, ease: "power4.inOut" });
+    document.body.classList.add('waking-up');
     
     // Fade in the hat button
     nextBtn.style.display = 'block';
@@ -243,45 +281,34 @@ document.getElementById('enter-btn').addEventListener('click', () => {
     gsap.to(nextBtn, { opacity: 1, duration: 1, delay: 1 });
 
     setTimeout(() => {
-        document.body.classList.remove('falling');
+        document.body.classList.remove('waking-up');
         goToPanel(1);
-    }, 1500);
+    }, 4500); // Wake up animation takes 4.5s
 });
 
-// Hat button logic
+// Hat button logic (Living entity)
+nextBtn.addEventListener('mousemove', (e) => {
+    const r = nextBtn.getBoundingClientRect();
+    const cx = r.left + r.width / 2;
+    const cy = r.top + r.height / 2;
+    const dx = (e.clientX - cx) * 0.1;
+    const dy = (e.clientY - cy) * 0.1;
+    gsap.to(nextBtn, { x: dx, y: dy, rotation: dx * 0.5, duration: 0.3 });
+});
+nextBtn.addEventListener('mouseleave', () => {
+    gsap.to(nextBtn, { x: 0, y: 0, rotation: 0, duration: 0.5, ease: "elastic.out(1, 0.3)" });
+});
+
 nextBtn.addEventListener('click', () => {
-    // Add a little click feedback animation to the hat
-    gsap.fromTo(nextBtn, { scale: 0.8 }, { scale: 1, duration: 0.4, ease: "back.out(2)" });
+    // Teleport/glitch feedback
+    gsap.fromTo(nextBtn, 
+        { scale: 0.5, filter: "blur(10px) brightness(2)" }, 
+        { scale: 1, filter: "blur(0px) brightness(1)", duration: 0.6, ease: "back.out(2)" }
+    );
     goToPanel(currentPanelIndex + 1);
 });
 
-// ─── WOW #2: COUNTDOWN CLOCK EXPAND ───
-ScrollTrigger.create({
-    trigger: '#scroll-container',
-    start: `${(4/totalPanels)*100}% top`,
-    end: `${(5/totalPanels)*100}% top`,
-    onEnter: () => document.getElementById('panel-countdown').setAttribute('data-wow','active'),
-    onLeaveBack: () => document.getElementById('panel-countdown').removeAttribute('data-wow'),
-});
-
-// ─── WOW #3: OUTRO CARD EXPLOSION ───
-ScrollTrigger.create({
-    trigger: '#scroll-container',
-    start: `${(6/totalPanels)*100}% top`,
-    onEnter: () => {
-        const box = document.getElementById('card-explosion');
-        for (let i = 0; i < 20; i++) {
-            const c = document.createElement('div');
-            c.textContent = ['♠','♥','♦','♣'][i%4];
-            c.style.cssText = `position:absolute;font-size:${1.5+Math.random()*2}rem;color:${i%2===0?'var(--gold)':'var(--suit-red)'};opacity:0;left:50%;top:50%;pointer-events:none;`;
-            box.appendChild(c);
-            gsap.to(c, { x: (Math.random()-0.5)*600, y: (Math.random()-0.5)*400, rotation: Math.random()*720-360, opacity: 0.6, duration: 2+Math.random(), ease: "power2.out" });
-            gsap.to(c, { opacity: 0, duration: 1, delay: 2+Math.random() });
-        }
-    }, once: true
-});
-
-// ─── COUNTDOWN WITH GLITCH ───
+// ─── COUNTDOWN WITH EMOTIONAL GLITCH ───
 const eventDate = new Date('2026-06-21T16:00:00').getTime();
 let prevMin = '';
 function updateCountdown() {
@@ -290,6 +317,7 @@ function updateCountdown() {
     const days = String(Math.floor(d/86400000)).padStart(2,'0');
     const hrs = String(Math.floor((d%86400000)/3600000)).padStart(2,'0');
     const mins = String(Math.floor((d%3600000)/60000)).padStart(2,'0');
+    
     document.getElementById('days').textContent = days;
     document.getElementById('hours').textContent = hrs;
     const mEl = document.getElementById('minutes');
@@ -299,22 +327,16 @@ function updateCountdown() {
         prevMin = mins;
     }
     mEl.textContent = mins;
+
+    // Emotional scale (distortion when < 10 days)
+    if (d < 864000000) { // 10 days
+        const watch = document.getElementById('pocket-watch');
+        if (watch) watch.style.filter = "drop-shadow(0 0 15px rgba(139, 26, 26, 0.4)) contrast(1.2)";
+    }
 }
 setInterval(updateCountdown, 1000);
 updateCountdown();
 
-// ─── SUIT CARD 3D TILT ───
-document.querySelectorAll('.suit-card').forEach(card => {
-    card.addEventListener('mousemove', (e) => {
-        const r = card.getBoundingClientRect();
-        const x = ((e.clientX-r.left)/r.width-0.5)*2;
-        const y = ((e.clientY-r.top)/r.height-0.5)*2;
-        gsap.to(card, { rotateY: x*15, rotateX: -y*15, duration: 0.3, transformPerspective: 800 });
-    });
-    card.addEventListener('mouseleave', () => {
-        gsap.to(card, { rotateY: 0, rotateX: 0, duration: 0.6, ease: "elastic.out(1,0.4)" });
-    });
-});
 
 // ─── UNIVERSES ───
 const movieData = {
