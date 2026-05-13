@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Save the Date | Alice no País das Maravilhas</title>
+    <meta name="description" content="Você está convidado para atravessar a toca do coelho.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Cursor -->
+    <div class="cursor cursor--dot" id="cursor-dot"></div>
+    <div class="cursor cursor--glow" id="cursor-glow"></div>
+
+    <!-- Loader -->
+    <div class="loader" id="loader">
+        <div class="loader__spinner"></div>
+        <p class="loader__text font-display" id="loader-text">Atravessando a toca...</p>
+        <h2 class="loader__phrase font-display" id="loader-phrase">"Nós todos somos loucos por aqui..."</h2>
+        <div class="loader__psyche" id="psyche-bg"></div>
+    </div>
+
+    <!-- Vignette -->
+    <div class="vignette"></div>
+
+    <!-- Spiral Background (visible during scroll) -->
+    <div class="spiral-bg" id="spiral-bg">
+        <img src="spiral_bg.jpg" alt="" class="spiral-bg__img">
+        <img src="cheshire.png" alt="" class="spiral-bg__cat">
+    </div>
+
+    <!-- Navigation Button (Hat) -->
+    <button id="next-btn" class="nav-hat-btn" aria-label="Próxima Seção" style="display: none;">
+        <img src="hat_btn.png" alt="Avançar">
+    </button>
+
+    <!-- Audio Elements -->
+    <audio id="bg-music" loop preload="auto">
+        <source src="background_music.mp3" type="audio/mpeg">
+    </audio>
+    <button class="audio-toggle font-display" id="audio-toggle" aria-label="Toggle Audio">♪</button>
+
+    <!-- 3D Canvas -->
+    <canvas class="tunnel-canvas" id="tunnel-canvas"></canvas>
+
+    <!-- Scroll Container -->
+    <main id="scroll-container">
+        <div id="panels-wrapper">
+
+            <!-- ═══ HERO ═══ -->
+            <section class="panel panel--hero is-active" id="panel-hero" data-panel="0">
+                <div class="hero__bg">
+                    <img src="hero.png" alt="">
+                    <div class="hero__gradient"></div>
+                </div>
+                <div class="hero__content">
+                    <h1 class="hero__title font-display text-glow">
+                        <span class="hero__line"><span>Você está convidado para</span></span>
+                        <span class="hero__line hero__line--accent"><span>atravessar a toca do coelho</span></span>
+                    </h1>
+                    <p class="hero__sub font-body" id="hero-sub">Uma noite onde a fantasia deixa de ser opcional.</p>
+                    <button class="btn-enter font-display" id="enter-btn">Entrar no País das Maravilhas</button>
+                </div>
+            </section>
+
+            <!-- ═══ RULES ═══ -->
+            <section class="panel panel--rules" id="panel-rules" data-panel="1">
+                <h2 class="rules__title font-display text-glow">No País das Maravilhas, existem regras...</h2>
+                <div class="rules__grid">
+                    <div class="suit-card suit-card--hearts">
+                        <div class="suit-icon">&hearts;</div>
+                        <h3 class="suit-title font-display">Traje Obrigatório</h3>
+                        <p class="suit-desc font-body">Fantasia obrigatória para TODOS os convidados. Não se perca na multidão.</p>
+                    </div>
+                    <div class="suit-card suit-card--spades">
+                        <div class="suit-icon">&spades;</div>
+                        <h3 class="suit-title font-display">Os Guardiões</h3>
+                        <p class="suit-desc font-body">Apenas os anfitriões pertencem ao universo Alice. Escolha seu próprio mundo.</p>
+                    </div>
+                    <div class="suit-card suit-card--diamonds">
+                        <div class="suit-icon">&diams;</div>
+                        <h3 class="suit-title font-display">A Imaginação</h3>
+                        <p class="suit-desc font-body">Criatividade vale mais que luxo. Surpreenda os olhos que observam.</p>
+                    </div>
+                    <div class="suit-card suit-card--clubs">
+                        <div class="suit-icon">&clubs;</div>
+                        <h3 class="suit-title font-display">Elegância Excêntrica</h3>
+                        <p class="suit-desc font-body">A extravagância é sua melhor companhia. Sinta-se em casa no bizarro.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ═══ UNIVERSES ═══ -->
+            <section class="panel panel--universes" id="panel-universes" data-panel="2">
+                <h2 class="universes__title font-display text-glow">Inspirações de Universos</h2>
+                <div class="universes__btns">
+                    <button class="btn-studio font-display" data-studio="disney">Disney</button>
+                    <button class="btn-studio font-display" data-studio="dreamworks">Dreamworks</button>
+                    <button class="btn-studio font-display" data-studio="marvel">Marvel</button>
+                </div>
+                <div class="movies__grid" id="movies-grid"></div>
+            </section>
+
+            <!-- ═══ GIFTS ═══ -->
+            <section class="panel panel--gifts" id="panel-gifts" data-panel="3">
+                <h2 class="gifts__title font-display text-glow">Mesa de Chá de Presentes</h2>
+                <p class="gifts__sub font-body">Preferimos a magia da sua presença. Se desejar presentear, escolha um item via PIX.</p>
+                <div class="gifts__grid">
+                    <div class="gift-card">
+                        <div class="gift-card__icon">☕</div>
+                        <h3 class="gift-card__name font-display">Xícara de Porcelana</h3>
+                        <p class="gift-card__desc font-body">Um brinde à amizade</p>
+                        <div class="gift-card__price font-display">R$ 50</div>
+                        <button class="gift-card__btn font-display">Presentear</button>
+                    </div>
+                    <div class="gift-card">
+                        <div class="gift-card__icon">🫖</div>
+                        <h3 class="gift-card__name font-display">Bule Encantado</h3>
+                        <p class="gift-card__desc font-body">Para manter a conversa quente</p>
+                        <div class="gift-card__price font-display">R$ 150</div>
+                        <button class="gift-card__btn font-display">Presentear</button>
+                    </div>
+                    <div class="gift-card">
+                        <div class="gift-card__icon">🎩</div>
+                        <h3 class="gift-card__name font-display">Cartola do Chapeleiro</h3>
+                        <p class="gift-card__desc font-body">O toque final de elegância</p>
+                        <div class="gift-card__price font-display">R$ 500</div>
+                        <button class="gift-card__btn font-display">Presentear</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ═══ COUNTDOWN ═══ -->
+            <section class="panel panel--countdown" id="panel-countdown" data-panel="4">
+                <div class="countdown__watch" id="pocket-watch">
+                    <svg viewBox="0 0 300 300" width="100%" height="100%">
+                        <path d="M150 0 Q160 30 150 50" stroke="var(--gold)" stroke-width="2" fill="none" opacity="0.4"/>
+                        <circle cx="150" cy="8" r="6" fill="none" stroke="var(--gold)" stroke-width="1.5" opacity="0.5"/>
+                        <circle cx="150" cy="170" r="120" fill="none" stroke="var(--gold)" stroke-width="2" opacity="0.3"/>
+                        <circle cx="150" cy="170" r="115" fill="rgba(8,8,8,0.85)" stroke="var(--gold)" stroke-width="1" opacity="0.6"/>
+                        <g opacity="0.4">
+                            <line x1="150" y1="62" x2="150" y2="72" stroke="var(--gold)" stroke-width="2"/>
+                            <line x1="150" y1="268" x2="150" y2="278" stroke="var(--gold)" stroke-width="2"/>
+                            <line x1="42" y1="170" x2="52" y2="170" stroke="var(--gold)" stroke-width="2"/>
+                            <line x1="248" y1="170" x2="258" y2="170" stroke="var(--gold)" stroke-width="2"/>
+                            <line x1="85" y1="105" x2="92" y2="112" stroke="var(--gold)" stroke-width="1.5"/>
+                            <line x1="208" y1="105" x2="215" y2="112" stroke="var(--gold)" stroke-width="1.5"/>
+                            <line x1="85" y1="235" x2="92" y2="228" stroke="var(--gold)" stroke-width="1.5"/>
+                            <line x1="208" y1="235" x2="215" y2="228" stroke="var(--gold)" stroke-width="1.5"/>
+                        </g>
+                        <circle cx="150" cy="170" r="95" fill="none" stroke="var(--gold)" stroke-width="0.5" opacity="0.15" stroke-dasharray="4 6"/>
+                        <circle cx="150" cy="170" r="15" fill="none" stroke="var(--gold)" stroke-width="0.8" opacity="0.2">
+                            <animateTransform attributeName="transform" type="rotate" values="0 150 170;360 150 170" dur="30s" repeatCount="indefinite"/>
+                        </circle>
+                        <line id="minute-hand" x1="150" y1="170" x2="150" y2="80" stroke="var(--gold)" stroke-width="2" stroke-linecap="round" opacity="0.8">
+                            <animateTransform attributeName="transform" type="rotate" values="0 150 170;360 150 170" dur="60s" repeatCount="indefinite"/>
+                        </line>
+                        <line id="hour-hand" x1="150" y1="170" x2="150" y2="110" stroke="var(--gold)" stroke-width="3" stroke-linecap="round" opacity="0.9">
+                            <animateTransform attributeName="transform" type="rotate" values="0 150 170;360 150 170" dur="720s" repeatCount="indefinite"/>
+                        </line>
+                        <line id="second-hand" x1="150" y1="170" x2="150" y2="75" stroke="var(--suit-red)" stroke-width="1" stroke-linecap="round" opacity="0.6">
+                            <animateTransform attributeName="transform" type="rotate" values="0 150 170;360 150 170" dur="6s" repeatCount="indefinite"/>
+                        </line>
+                        <circle cx="150" cy="170" r="4" fill="var(--gold)"/>
+                        <circle cx="150" cy="170" r="120" fill="none" stroke="var(--gold)" stroke-width="1" opacity="0.1">
+                            <animate attributeName="r" values="118;122;118" dur="4s" repeatCount="indefinite"/>
+                            <animate attributeName="opacity" values="0.1;0.2;0.1" dur="4s" repeatCount="indefinite"/>
+                        </circle>
+                    </svg>
+                </div>
+                <h2 class="countdown__title font-display text-glow">O tempo está acabando...</h2>
+                <div class="timer">
+                    <div class="timer__block">
+                        <span class="timer__digit font-display text-glow" id="days">00</span>
+                        <span class="timer__label font-body">Dias</span>
+                    </div>
+                    <div class="timer__block">
+                        <span class="timer__digit font-display text-glow" id="hours">00</span>
+                        <span class="timer__label font-body">Horas</span>
+                    </div>
+                    <div class="timer__block">
+                        <span class="timer__digit font-display text-glow" id="minutes">00</span>
+                        <span class="timer__label font-body">Minutos</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ═══ RSVP ═══ -->
+            <section class="panel panel--rsvp" id="panel-rsvp" data-panel="5">
+                <div class="rsvp__form">
+                    <h2 class="rsvp__title font-display text-glow">Garanta seu lugar na mesa</h2>
+                    <form id="rsvp-form">
+                        <div class="form-group">
+                            <input type="text" class="form-input font-body" id="f-name" required placeholder=" ">
+                            <label class="form-label font-display" for="f-name">Nome Completo</label>
+                        </div>
+                        <div class="form-group">
+                            <input type="text" class="form-input font-body" id="f-costume" placeholder=" ">
+                            <label class="form-label font-display" for="f-costume">Sua Fantasia</label>
+                        </div>
+                        <button type="submit" class="btn-submit font-display">Confirmar Lugar na Mesa</button>
+                    </form>
+                </div>
+            </section>
+
+            <!-- ═══ OUTRO ═══ -->
+            <section class="panel panel--outro" id="panel-outro" data-panel="6">
+                <div class="card-explosion" id="card-explosion"></div>
+                <p class="outro__text font-display text-glow">"Algumas noites não devem ser esquecidas."</p>
+                <p class="outro__date font-body">Alice in Wonderland &middot; 2026</p>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="main.js"></script>
+</body>
+</html>
