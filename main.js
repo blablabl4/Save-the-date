@@ -30,37 +30,26 @@ if (enterBtn) {
 // ─── NEW LOADING & INTRO SEQUENCE ───
 let audioPlaying = false; // Global audio state
 
-window.addEventListener('load', () => {
+document.addEventListener('DOMContentLoaded', () => {
     // Hide everything initially
     gsap.set('.panel', { opacity: 0, scale: 0.2, pointerEvents: 'none' });
     gsap.set('#next-btn', { display: 'none', opacity: 0 });
     
-    const music = document.getElementById('bg-music');
     const tl = gsap.timeline();
     
     // Text 1: Atravessar a toca
     tl.to('#intro-text-1', { opacity: 1, duration: 2, ease: "power2.inOut", delay: 0.5 })
       .to('#intro-text-1', { opacity: 0, duration: 1.5, ease: "power2.inOut", delay: 2 })
       
-      // Text 2: Aumente o volume
-      .to('#intro-text-2', { 
-          opacity: 1, duration: 2, ease: "power2.inOut",
-          onStart: () => {
-              if (music) {
-                  music.volume = 0.4;
-                  music.play().then(() => { audioPlaying = true; }).catch(() => {});
-              }
-          }
-      })
-      .to('#intro-text-2', { opacity: 0, duration: 1.5, ease: "power2.inOut", delay: 2 })
-      
       // Show Hat Centered
       .to('#intro-sequence', { display: 'none', duration: 0 })
       .add(() => {
           const btn = document.getElementById('next-btn');
-          btn.style.display = 'block';
-          btn.classList.add('nav-hat-btn--center'); // Center it
-          gsap.to(btn, { opacity: 1, duration: 2 });
+          if (btn) {
+              btn.style.display = 'block';
+              btn.classList.add('nav-hat-btn--center'); // Center it
+              gsap.to(btn, { opacity: 1, duration: 2 });
+          }
       });
 });
 
@@ -237,7 +226,7 @@ function goToPanel(index) {
               // Stagger modal contents
               const modal = nextPanel.querySelector('.glass-modal');
               if (modal) {
-                  const items = modal.querySelectorAll('.suit-floating, .gift-floating, .btn-studio, .movie-card, .timer__block, .form-group, .btn-submit, .rules__title, .universes__title, .gifts__title, .countdown__title, .rsvp__title, .gifts__sub');
+                  const items = modal.querySelectorAll('.rule-row, .gift-row, .btn-studio, .movie-card, .timer__block, .form-group, .btn-submit, .rules__title, .universes__title, .gifts__title, .countdown__title, .rsvp__title, .gifts__sub');
                   if (items.length > 0) {
                       gsap.fromTo(items, 
                           { y: 40, opacity: 0 }, 
@@ -401,7 +390,7 @@ document.getElementById('rsvp-form').addEventListener('submit', (e) => {
 });
 
 // ─── AMBIENT AUDIO & BG MUSIC ───
-let audioCtx, audioPlaying = false;
+let audioCtx;
 const bgMusic = document.getElementById('bg-music');
 
 document.getElementById('audio-toggle').addEventListener('click', () => {

@@ -19,7 +19,6 @@
     <!-- New Intro Sequence Container -->
     <div class="intro-sequence" id="intro-sequence">
         <h1 class="intro-text font-display text-cinematic" id="intro-text-1">Você está convidado para<br>atravessar a toca do coelho</h1>
-        <h1 class="intro-text font-display text-cinematic" id="intro-text-2">Aumente o volume e<br>participe desde já da experiência</h1>
     </div>
 
     <!-- Vignette -->
@@ -37,7 +36,7 @@
     </button>
 
     <!-- Audio Elements -->
-    <audio id="bg-music" loop preload="auto">
+    <audio id="bg-music" loop preload="none">
         <source src="background_music.mp3" type="audio/mpeg">
     </audio>
     <button class="audio-toggle font-display" id="audio-toggle" aria-label="Toggle Audio">♪</button>
@@ -55,27 +54,35 @@
             <!-- ═══ RULES ═══ -->
             <section class="panel panel--rules" id="panel-rules" data-panel="1">
                 <div class="glass-modal">
-                    <h2 class="rules__title font-display text-cinematic">No País das Maravilhas, existem regras...</h2>
-                    <div class="rules__cinematic">
-                        <div class="suit-floating">
-                            <div class="suit-icon">&hearts;</div>
-                            <h3 class="suit-title font-display">Traje Obrigatório</h3>
-                            <p class="suit-desc font-body">Fantasia obrigatória para TODOS os convidados. Não se perca na multidão.</p>
+                    <h2 class="rules__title font-display text-cinematic">Regras de Ouro do País das Maravilhas</h2>
+                    <div class="rules__list">
+                        <div class="rule-row">
+                            <span class="rule-icon">&hearts;</span>
+                            <div class="rule-text">
+                                <h3 class="rule-title font-display">Traje Obrigatório</h3>
+                                <p class="rule-desc font-body">Fantasia obrigatória para todos. Não se perca na multidão.</p>
+                            </div>
                         </div>
-                        <div class="suit-floating">
-                            <div class="suit-icon">&spades;</div>
-                            <h3 class="suit-title font-display">Os Guardiões</h3>
-                            <p class="suit-desc font-body">Apenas os anfitriões pertencem ao universo Alice. Escolha seu próprio mundo.</p>
+                        <div class="rule-row">
+                            <span class="rule-icon">&spades;</span>
+                            <div class="rule-text">
+                                <h3 class="rule-title font-display">Os Guardiões</h3>
+                                <p class="rule-desc font-body">Apenas os anfitriões pertencem ao universo Alice. Escolha seu próprio mundo.</p>
+                            </div>
                         </div>
-                        <div class="suit-floating">
-                            <div class="suit-icon">&diams;</div>
-                            <h3 class="suit-title font-display">A Imaginação</h3>
-                            <p class="suit-desc font-body">Criatividade vale mais que luxo. Surpreenda os olhos que observam.</p>
+                        <div class="rule-row">
+                            <span class="rule-icon">&diams;</span>
+                            <div class="rule-text">
+                                <h3 class="rule-title font-display">A Imaginação</h3>
+                                <p class="rule-desc font-body">Criatividade vale mais que luxo. Surpreenda os olhos que observam.</p>
+                            </div>
                         </div>
-                        <div class="suit-floating">
-                            <div class="suit-icon">&clubs;</div>
-                            <h3 class="suit-title font-display">Elegância Excêntrica</h3>
-                            <p class="suit-desc font-body">A extravagância é sua melhor companhia. Sinta-se em casa no bizarro.</p>
+                        <div class="rule-row">
+                            <span class="rule-icon">&clubs;</span>
+                            <div class="rule-text">
+                                <h3 class="rule-title font-display">Elegância Excêntrica</h3>
+                                <p class="rule-desc font-body">A extravagância é sua melhor companhia. Sinta-se em casa no bizarro.</p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -99,21 +106,21 @@
                 <div class="glass-modal">
                     <h2 class="gifts__title font-display text-cinematic">Mesa de Chá de Presentes</h2>
                     <p class="gifts__sub font-body">Preferimos a magia da sua presença. Se desejar presentear, escolha um item via PIX.</p>
-                    <div class="gifts__cinematic">
-                        <div class="gift-floating">
-                            <div class="gift-icon">☕</div>
-                            <h3 class="gift-name font-display">Xícara de Porcelana</h3>
-                            <div class="gift-price font-display">R$ 50</div>
+                    <div class="gifts__list">
+                        <div class="gift-row">
+                            <span class="gift-icon">☕</span>
+                            <span class="gift-name font-display">Xícara de Porcelana</span>
+                            <span class="gift-price font-display">R$ 50</span>
                         </div>
-                        <div class="gift-floating">
-                            <div class="gift-icon">🫖</div>
-                            <h3 class="gift-name font-display">Bule Encantado</h3>
-                            <div class="gift-price font-display">R$ 150</div>
+                        <div class="gift-row">
+                            <span class="gift-icon">🫖</span>
+                            <span class="gift-name font-display">Bule Encantado</span>
+                            <span class="gift-price font-display">R$ 150</span>
                         </div>
-                        <div class="gift-floating">
-                            <div class="gift-icon">🎩</div>
-                            <h3 class="gift-name font-display">Cartola do Chapeleiro</h3>
-                            <div class="gift-price font-display">R$ 500</div>
+                        <div class="gift-row">
+                            <span class="gift-icon">🎩</span>
+                            <span class="gift-name font-display">Cartola do Chapeleiro</span>
+                            <span class="gift-price font-display">R$ 500</span>
                         </div>
                     </div>
                 </div>
@@ -122,7 +129,7 @@
             <!-- ═══ COUNTDOWN ═══ -->
             <section class="panel panel--countdown" id="panel-countdown" data-panel="4">
                 <div class="glass-modal">
-                    <h2 class="countdown__title font-display text-cinematic" style="margin-bottom: 2rem;">O tempo está acabando...</h2>
+                    <h2 class="countdown__title font-display text-cinematic">O tempo está acabando...</h2>
                     <div class="timer">
                         <div class="timer__block">
                             <span class="timer__digit font-display text-cinematic" id="days">00</span>

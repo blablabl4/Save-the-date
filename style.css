@@ -35,6 +35,7 @@ body {
 /* ─── CURSOR ─── */
 .cursor {
     position: fixed;
+    top: 0; left: 0;
     pointer-events: none;
     z-index: 99999;
     border-radius: 50%;
@@ -310,60 +311,59 @@ body.waking-up {
 /* ═══════════════════════════════════════════════
    RULES SECTION
    ═══════════════════════════════════════════════ */
-.panel--rules { padding: 2rem; }
+.panel--rules { padding: 1.5rem; }
 
 .rules__title {
-    font-size: clamp(1.4rem, 3.5vw, 2.8rem);
+    font-size: clamp(1.3rem, 3vw, 2.2rem);
     color: var(--gold);
     text-align: center;
-    margin-bottom: 2.5rem;
+    margin-bottom: 2rem;
 }
 
-.rules__cinematic {
+.rules__list {
     display: flex;
     flex-direction: column;
-    gap: 3rem;
-    max-width: 800px;
+    gap: 1.2rem;
     width: 100%;
-    align-items: center;
+    max-width: 550px;
 }
 
-/* ─── SUIT FLOATING CARDS ─── */
-.suit-floating {
-    position: relative;
-    text-align: center;
-    opacity: 0.8;
-    transition: all 0.8s ease;
-    padding: 2rem;
-    border-bottom: 1px solid rgba(200,169,107,0.1);
+.rule-row {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 1rem 0;
+    border-bottom: 1px solid rgba(200,169,107,0.15);
     width: 100%;
 }
-.suit-floating:last-child {
+.rule-row:last-child {
     border-bottom: none;
 }
 
-.suit-icon {
-    font-size: 3rem;
-    margin-bottom: 0.5rem;
+.rule-icon {
+    font-size: 2.2rem;
     color: var(--gold);
-    opacity: 0.6;
-    text-shadow: 0 4px 12px rgba(0,0,0,0.8);
+    min-width: 45px;
+    text-align: center;
+    text-shadow: 0 2px 8px rgba(200,169,107,0.2);
 }
 
-.suit-title {
-    font-size: 1.5rem;
-    margin-bottom: 0.8rem;
-    text-transform: uppercase;
-    letter-spacing: 0.2em;
-    color: var(--white);
-    text-shadow: 0 2px 8px rgba(0,0,0,0.8);
+.rule-text {
+    flex: 1;
+    text-align: left;
 }
-.suit-desc {
-    font-size: 1rem;
+
+.rule-title {
+    font-size: 1.1rem;
+    margin-bottom: 0.3rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--white);
+}
+.rule-desc {
+    font-size: 0.85rem;
     opacity: 0.7;
-    line-height: 1.6;
-    max-width: 500px;
-    margin: 0 auto;
+    line-height: 1.4;
 }
 
 /* ═══════════════════════════════════════════════
@@ -394,8 +394,12 @@ body.waking-up {
     text-transform: uppercase;
     letter-spacing: 0.15em;
     cursor: pointer;
+    font-weight: 700;
     transition: all 0.4s;
-    border-radius: 4px;
+    border-radius: 0px;
+    flex: 1;
+    min-width: 100px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.5);
 }
 .btn-studio:hover, .btn-studio.is-active {
     background: var(--white);
@@ -437,75 +441,101 @@ body.waking-up {
 /* ═══════════════════════════════════════════════
    GIFTS SECTION
    ═══════════════════════════════════════════════ */
-.panel--gifts { padding: 2rem; }
+.panel--gifts { padding: 1.5rem; }
 
 .gifts__title {
-    font-size: clamp(1.4rem, 3.5vw, 2.8rem);
+    font-size: clamp(1.3rem, 3vw, 2.2rem);
     color: var(--gold);
     text-align: center;
-    margin-bottom: 0.8rem;
+    margin-bottom: 0.5rem;
 }
 .gifts__sub {
     text-align: center;
-    opacity: 0.45;
-    margin-bottom: 2rem;
-    max-width: 550px;
+    opacity: 0.6;
+    margin-bottom: 1.8rem;
+    max-width: 480px;
     font-size: 0.85rem;
+    line-height: 1.4;
 }
 
-.gifts__cinematic {
+.gifts__list {
     display: flex;
     flex-direction: column;
-    gap: 2rem;
-    max-width: 600px;
+    gap: 0;
     width: 100%;
+    max-width: 500px;
 }
 
-.gift-floating {
+.gift-row {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 1.5rem;
+    padding: 1.2rem 0.5rem;
     border-bottom: 1px solid rgba(200,169,107,0.15);
-    background: transparent;
+    width: 100%;
+}
+.gift-row:last-child {
+    border-bottom: none;
 }
 
-.gift-icon { font-size: 2rem; opacity: 0.6; }
-.gift-name { color: var(--gold); font-size: 1.2rem; text-shadow: 0 2px 8px rgba(0,0,0,0.8); }
-.gift-price { font-size: 1.2rem; opacity: 0.8; }
+.gift-icon {
+    font-size: 1.8rem;
+    color: var(--gold);
+    margin-right: 1rem;
+    opacity: 0.8;
+}
+.gift-name {
+    color: var(--white);
+    font-size: 1rem;
+    flex: 1;
+    text-align: left;
+    letter-spacing: 0.05em;
+}
+.gift-price {
+    font-size: 1.1rem;
+    color: var(--gold);
+    font-weight: 700;
+    text-shadow: 0 2px 6px rgba(200,169,107,0.15);
+}
 
 /* ═══════════════════════════════════════════════
    COUNTDOWN SECTION
    ═══════════════════════════════════════════════ */
-.panel--countdown { overflow: hidden; }
-
-.countdown__watch {
-    width: clamp(180px, 28vw, 280px);
-    height: clamp(180px, 28vw, 280px);
-    margin-bottom: 1.5rem;
-}
+.panel--countdown { padding: 1.5rem; }
 
 .countdown__title {
-    font-size: clamp(1.4rem, 3.5vw, 2.8rem);
+    font-size: clamp(1.3rem, 3vw, 2.2rem);
     color: var(--gold);
+    text-align: center;
     margin-bottom: 2rem;
 }
 
 .timer {
     display: flex;
-    gap: clamp(1.5rem, 4vw, 4rem);
+    justify-content: center;
+    align-items: center;
+    gap: clamp(1.2rem, 3vw, 3rem);
+    width: 100%;
 }
-.timer__block { text-align: center; }
+.timer__block {
+    text-align: center;
+    min-width: 70px;
+}
 .timer__digit {
-    font-size: clamp(2.8rem, 8vw, 6rem);
+    font-size: clamp(2.5rem, 6vw, 4.5rem);
+    color: var(--gold);
+    font-weight: 700;
     display: block;
-    transition: all 0.3s;
+    line-height: 1;
+    margin-bottom: 0.5rem;
+    text-shadow: 0 2px 12px rgba(0,0,0,0.8), 0 0 18px rgba(200,169,107,0.15);
 }
 .timer__label {
-    font-size: 0.65rem;
+    font-size: 0.75rem;
     text-transform: uppercase;
-    letter-spacing: 0.3em;
-    opacity: 0.35;
+    letter-spacing: 0.2em;
+    color: var(--white);
+    opacity: 0.65;
 }
 
 /* Countdown glitch on number change */
@@ -643,23 +673,33 @@ body.waking-up {
 
     .panel { padding: 0.8rem; }
 
-    .rules__cinematic {
-        gap: 1.5rem;
-    }
-    .suit-floating {
-        padding: 1rem;
-    }
-    .suit-icon { font-size: 2rem; }
-    .suit-title { font-size: 1rem; }
-    .suit-desc { font-size: 0.8rem; }
-
-    .gifts__cinematic {
+    .rule-row {
         gap: 1rem;
+        padding: 0.8rem 0;
     }
-    .gift-floating {
-        flex-direction: column;
-        gap: 0.5rem;
-        text-align: center;
+    .rule-icon {
+        font-size: 1.8rem;
+        min-width: 35px;
+    }
+    .rule-title {
+        font-size: 1rem;
+    }
+    .rule-desc {
+        font-size: 0.8rem;
+    }
+
+    .gift-row {
+        padding: 0.8rem 0.2rem;
+    }
+    .gift-icon {
+        font-size: 1.5rem;
+        margin-right: 0.8rem;
+    }
+    .gift-name {
+        font-size: 0.9rem;
+    }
+    .gift-price {
+        font-size: 1rem;
     }
 
     .movies__grid {
