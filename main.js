@@ -27,40 +27,42 @@ if (enterBtn) {
     });
 }
 
-// ─── LOADING SEQUENCE ───
+// ─── NEW LOADING & INTRO SEQUENCE ───
+let audioPlaying = false; // Global audio state
+
 window.addEventListener('load', () => {
+    // Hide everything initially
+    gsap.set('.panel', { opacity: 0, scale: 0.2, pointerEvents: 'none' });
+    gsap.set('#next-btn', { display: 'none', opacity: 0 });
+    
+    const music = document.getElementById('bg-music');
     const tl = gsap.timeline();
-    tl.to('#loader-text', { opacity: 0, duration: 0.8, delay: 1 })
-      .to('#psyche-bg', { opacity: 0.5, duration: 2, ease: "power2.inOut" }, "-=0.3")
-      .to('#loader-phrase', { opacity: 1, scale: 1, filter: "blur(0px)", duration: 1.5, ease: "power3.out" }, "-=1")
-      .to('#loader-phrase', { skewX: 8, duration: 0.06, repeat: 5, yoyo: true }, "+=0.6")
-      .to('#loader', { opacity: 0, duration: 1.2, ease: "expo.inOut",
-          onComplete: () => {
-              document.getElementById('loader').style.display = 'none';
-              // Auto-play background music
-              const music = document.getElementById('bg-music');
+    
+    // Text 1: Atravessar a toca
+    tl.to('#intro-text-1', { opacity: 1, duration: 2, ease: "power2.inOut", delay: 0.5 })
+      .to('#intro-text-1', { opacity: 0, duration: 1.5, ease: "power2.inOut", delay: 2 })
+      
+      // Text 2: Aumente o volume
+      .to('#intro-text-2', { 
+          opacity: 1, duration: 2, ease: "power2.inOut",
+          onStart: () => {
               if (music) {
                   music.volume = 0.4;
-                  music.play().catch(() => {
-                      // Browser blocked autoplay — will play on first click
-                      document.addEventListener('click', function playOnce() {
-                          music.play();
-                          document.removeEventListener('click', playOnce);
-                      }, { once: true });
-                  });
+                  music.play().then(() => { audioPlaying = true; }).catch(() => {});
               }
           }
-      }, "+=0.5")
-      .from('.hero__line span', { y: '100%', duration: 1.2, stagger: 0.2, ease: "expo.out" }, "-=0.5")
-      .to('#hero-sub', { opacity: 1, duration: 0.8 }, "-=0.5")
-      .to('#enter-btn', { opacity: 1, duration: 0.8 }, "-=0.4");
+      })
+      .to('#intro-text-2', { opacity: 0, duration: 1.5, ease: "power2.inOut", delay: 2 })
+      
+      // Show Hat Centered
+      .to('#intro-sequence', { display: 'none', duration: 0 })
+      .add(() => {
+          const btn = document.getElementById('next-btn');
+          btn.style.display = 'block';
+          btn.classList.add('nav-hat-btn--center'); // Center it
+          gsap.to(btn, { opacity: 1, duration: 2 });
+      });
 });
-setTimeout(() => {
-    const l = document.getElementById('loader');
-    if (l && l.style.display !== 'none') {
-        gsap.to(l, { opacity: 0, duration: 1, onComplete: () => { l.style.display = 'none'; } });
-    }
-}, 7000);
 
 // ─── THREE.JS SETUP ───
 const canvas = document.getElementById('tunnel-canvas');
@@ -232,6 +234,18 @@ function goToPanel(index) {
           onStart: () => {
               nextPanel.classList.add('is-active');
               
+              // Stagger modal contents
+              const modal = nextPanel.querySelector('.glass-modal');
+              if (modal) {
+                  const items = modal.querySelectorAll('.suit-floating, .gift-floating, .btn-studio, .movie-card, .timer__block, .form-group, .btn-submit, .rules__title, .universes__title, .gifts__title, .countdown__title, .rsvp__title, .gifts__sub');
+                  if (items.length > 0) {
+                      gsap.fromTo(items, 
+                          { y: 40, opacity: 0 }, 
+                          { y: 0, opacity: 1, duration: 0.8, stagger: 0.15, ease: "power2.out", delay: 0.8 }
+                      );
+                  }
+              }
+
               // WOW Effects & Audio
               if (index === 4) { // Countdown
                   document.getElementById('panel-countdown').setAttribute('data-wow','active');
@@ -271,20 +285,7 @@ function goToPanel(index) {
     );
 }
 
-// ─── WOW #1: ENTER BUTTON — REALITY WARP ───
-document.getElementById('enter-btn').addEventListener('click', () => {
-    document.body.classList.add('waking-up');
-    
-    // Fade in the hat button
-    nextBtn.style.display = 'block';
-    nextBtn.style.opacity = '0';
-    gsap.to(nextBtn, { opacity: 1, duration: 1, delay: 1 });
-
-    setTimeout(() => {
-        document.body.classList.remove('waking-up');
-        goToPanel(1);
-    }, 4500); // Wake up animation takes 4.5s
-});
+// WOW #1 (Reality Warp) is now handled directly by the first hat click.
 
 // Hat button logic (Living entity)
 nextBtn.addEventListener('mousemove', (e) => {
@@ -300,12 +301,38 @@ nextBtn.addEventListener('mouseleave', () => {
 });
 
 nextBtn.addEventListener('click', () => {
-    // Teleport/glitch feedback
-    gsap.fromTo(nextBtn, 
-        { scale: 0.5, filter: "blur(10px) brightness(2)" }, 
-        { scale: 1, filter: "blur(0px) brightness(1)", duration: 0.6, ease: "back.out(2)" }
-    );
-    goToPanel(currentPanelIndex + 1);
+    // If it's the first click (centered)
+    if (nextBtn.classList.contains('nav-hat-btn--center')) {
+        const music = document.getElementById('bg-music');
+        if (music && typeof audioPlaying !== 'undefined' && !audioPlaying) {
+            music.play().then(() => { audioPlaying = true; }).catch(() => {});
+        }
+        
+        // Remove center class so it goes to bottom right
+        nextBtn.classList.remove('nav-hat-btn--center');
+        
+        // Trigger dive
+        gsap.to(camera.position, { z: 5, duration: 2, ease: "power2.inOut" }); 
+        
+        // Show spiral and spin fast
+        gsap.to('#spiral-bg', { opacity: 1, duration: 2 });
+        
+        // Teleport/glitch feedback on button
+        gsap.fromTo(nextBtn, 
+            { scale: 0.5, filter: "blur(10px) brightness(2)" }, 
+            { scale: 1, filter: "blur(0px) brightness(1)", duration: 0.6, ease: "back.out(2)" }
+        );
+        
+        // Go to panel 1 (Rules)
+        goToPanel(1);
+    } else {
+        // Normal navigation
+        gsap.fromTo(nextBtn, 
+            { scale: 0.5, filter: "blur(10px) brightness(2)" }, 
+            { scale: 1, filter: "blur(0px) brightness(1)", duration: 0.6, ease: "back.out(2)" }
+        );
+        goToPanel(currentPanelIndex + 1);
+    }
 });
 
 // ─── COUNTDOWN WITH EMOTIONAL GLITCH ───
