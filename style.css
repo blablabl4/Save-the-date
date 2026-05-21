@@ -209,13 +209,23 @@ body.waking-up {
 
 /* Glass Modal base class */
 .glass-modal {
-    max-width: 600px; width: 90%;
-    padding: clamp(2rem, 4vw, 3.5rem);
-    background: rgba(20,15,30,0.78);
-    border: 1px solid rgba(200,169,107,0.1);
-    box-shadow: 0 8px 32px rgba(0,0,0,0.8);
-    border-radius: 8px; /* Slight rounding to make it look premium */
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    width: 90%;
+    max-width: 620px;
+    height: 530px; /* Standardized uniform height for all modals */
+    max-height: 85vh;
+    padding: clamp(1.5rem, 4vw, 2.8rem);
+    background: rgba(20,15,30,0.82);
+    border: 1px solid rgba(200,169,107,0.18);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.9);
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between; /* Space out elements symmetrically */
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    backdrop-filter: blur(10px);
 }
 
 /* ─── HERO ─── */
@@ -323,16 +333,18 @@ body.waking-up {
 .rules__list {
     display: flex;
     flex-direction: column;
-    gap: 1.2rem;
+    gap: 0.6rem;
     width: 100%;
     max-width: 550px;
+    flex-grow: 1;
+    justify-content: center;
 }
 
 .rule-row {
     display: flex;
     align-items: center;
-    gap: 1.5rem;
-    padding: 1rem 0;
+    gap: 1.2rem;
+    padding: 0.5rem 0;
     border-bottom: 1px solid rgba(200,169,107,0.15);
     width: 100%;
 }
@@ -410,27 +422,30 @@ body.waking-up {
 .movies__grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 0.7rem;
+    gap: 0.6rem;
     max-width: 700px;
     width: 100%;
     opacity: 0;
     transform: translateY(15px);
     transition: all 0.8s;
+    flex-grow: 1;
+    align-content: center;
 }
 
 .movie-card {
     background: rgba(20,15,30,0.6);
-    border: 1px solid rgba(255,255,255,0.02);
-    padding: 0.8rem;
+    border: 1px solid rgba(200,169,107,0.15);
+    padding: 0.6rem;
     text-align: center;
-    border-radius: 0;
+    border-radius: 4px;
     box-shadow: 0 4px 16px rgba(0,0,0,0.8);
+    transition: all 0.3s ease;
 }
 .movie-card:hover {
-    background: rgba(200,169,107,0.1);
+    background: rgba(200,169,107,0.15);
     border-color: var(--gold);
-    transform: translateY(-4px);
-    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.5);
 }
 .movie-card__name {
     font-size: 0.75rem;
@@ -645,23 +660,177 @@ body.waking-up {
 /* ═══════════════════════════════════════════════
    AUDIO CONTROL
    ═══════════════════════════════════════════════ */
-.audio-toggle {
+/* ═══════════════════════════════════════════════
+   FLOATING HEADER NAVIGATION & CURSOR HOVER
+   ═══════════════════════════════════════════════ */
+.floating-nav {
     position: fixed;
-    bottom: 1.5rem; right: 1.5rem;
-    z-index: 100002;
-    width: 40px; height: 40px;
-    border-radius: 50%;
-    background: rgba(200,169,107,0.08);
-    border: 1px solid rgba(200,169,107,0.2);
-    color: var(--gold);
-    cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 1rem;
-    transition: all 0.3s;
+    top: 1.5rem;
+    left: 50%;
+    transform: translate(-50%, -20px);
+    z-index: 100001;
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
-.audio-toggle:hover {
-    background: rgba(200,169,107,0.15);
-    border-color: var(--gold);
+.floating-nav.is-visible {
+    opacity: 1;
+    transform: translate(-50%, 0);
+    pointer-events: all;
+}
+.nav-item {
+    color: var(--white);
+    text-decoration: none;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    opacity: 0.5;
+    transition: all 0.3s ease;
+}
+.nav-item:hover, .nav-item.is-active {
+    opacity: 1;
+    color: var(--gold);
+    text-shadow: 0 0 10px var(--gold-glow);
+}
+.nav-separator {
+    color: var(--gold);
+    opacity: 0.3;
+    font-size: 1rem;
+}
+
+/* Custom Cursor Hover States */
+.cursor--dot.cursor--hover {
+    transform: scale(2.2) !important;
+    background: var(--white) !important;
+    box-shadow: 0 0 12px rgba(255,255,255,0.9);
+}
+.cursor--glow.cursor-glow--hover {
+    transform: scale(1.4) !important;
+    background: radial-gradient(circle, rgba(255,255,255,0.18) 0%, transparent 70%) !important;
+}
+
+/* ═══════════════════════════════════════════════
+   PIX PAYMENT MODAL
+   ═══════════════════════════════════════════════ */
+.pix-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 100010;
+    background: rgba(8,8,8,0.85);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s ease;
+    backdrop-filter: blur(8px);
+}
+.pix-modal.is-active {
+    opacity: 1;
+    pointer-events: all;
+}
+.pix-modal__card {
+    background: rgba(20,15,30,0.92);
+    border: 1px solid var(--gold);
+    box-shadow: 0 0 35px var(--gold-glow);
+    border-radius: 12px;
+    padding: 2.5rem 2rem;
+    max-width: 420px;
+    width: 90%;
+    position: relative;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transform: scale(0.85);
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.pix-modal.is-active .pix-modal__card {
+    transform: scale(1);
+}
+.pix-modal__close {
+    position: absolute;
+    top: 0.8rem; right: 1rem;
+    background: transparent;
+    border: none;
+    color: var(--white);
+    font-size: 2rem;
+    cursor: pointer;
+    opacity: 0.5;
+    transition: opacity 0.3s;
+}
+.pix-modal__close:hover {
+    opacity: 1;
+    color: var(--gold);
+}
+.pix-modal__title {
+    font-size: 1.4rem;
+    color: var(--gold);
+    margin-bottom: 0.2rem;
+}
+.pix-modal__subtitle {
+    font-size: 0.95rem;
+    opacity: 0.8;
+    margin-bottom: 1.2rem;
+}
+.pix-modal__qr-container {
+    width: 150px; height: 150px;
+    padding: 10px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(200,169,107,0.3);
+    border-radius: 8px;
+    margin-bottom: 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.pix-modal__qr {
+    width: 100%; height: 100%;
+}
+.pix-modal__info, .pix-modal__key-container {
+    width: 100%;
+    margin-bottom: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.pix-modal__label, .pix-modal__key-label {
+    font-size: 0.7rem;
+    opacity: 0.5;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 0.15rem;
+}
+.pix-modal__value {
+    font-size: 1.3rem;
+    color: var(--gold);
+    font-weight: 700;
+}
+.pix-modal__key {
+    font-size: 0.8rem;
+    color: var(--white);
+    word-break: break-all;
+}
+.pix-modal__toast {
+    position: absolute;
+    bottom: 5.2rem;
+    background: var(--gold);
+    color: var(--black);
+    padding: 0.4rem 1rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    opacity: 0;
+    transform: translateY(8px);
+    transition: all 0.3s ease;
+    pointer-events: none;
+}
+.pix-modal__toast.is-visible {
+    opacity: 1;
+    transform: translateY(0);
 }
 
 /* ═══════════════════════════════════════════════
@@ -704,6 +873,31 @@ body.waking-up {
 
     .movies__grid {
         grid-template-columns: repeat(2, 1fr) !important;
+    }
+
+    .spiral-bg__img { filter: none; opacity: 0.45; mix-blend-mode: normal; }
+    .spiral-bg { animation: rotateSlowly 180s linear infinite; }
+    .spiral-bg__cat { animation: rotateCounterSlowly 180s linear infinite; }
+
+    .nav-hat-btn { width: 65px; height: 65px; bottom: 1.5rem; }
+
+    .glass-modal {
+        height: 520px; /* Synchronized identical heights on mobile */
+        padding: 1.5rem;
+        justify-content: space-between;
+    }
+    
+    .rules__list {
+        gap: 0.4rem;
+    }
+    
+    .movies__grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 0.5rem;
+    }
+    
+    .movie-card {
+        padding: 0.5rem;
     }
 
     .spiral-bg__img { filter: none; opacity: 0.45; mix-blend-mode: normal; }

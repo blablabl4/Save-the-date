@@ -15,6 +15,22 @@ if (dot && glow) {
         dot.style.transform = `translate(${e.clientX - 5}px, ${e.clientY - 5}px)`;
         glow.style.transform = `translate(${e.clientX - 60}px, ${e.clientY - 60}px)`;
     });
+
+    // Custom Cursor Hover Interaction
+    document.addEventListener('mouseover', (e) => {
+        const target = e.target.closest('button, a, .gift-row, .btn-studio, .movie-card, input');
+        if (target) {
+            dot.classList.add('cursor--hover');
+            glow.classList.add('cursor-glow--hover');
+        }
+    });
+    document.addEventListener('mouseout', (e) => {
+        const target = e.target.closest('button, a, .gift-row, .btn-studio, .movie-card, input');
+        if (target) {
+            dot.classList.remove('cursor--hover');
+            glow.classList.remove('cursor-glow--hover');
+        }
+    });
 }
 
 // ─── BUTTON RIPPLE ───
@@ -234,6 +250,29 @@ function goToPanel(index) {
                       );
                   }
               }
+              
+              // Auto-select Disney button on Universes section load
+              if (index === 2) {
+                  const activeStudio = document.querySelector('.btn-studio.is-active');
+                  if (!activeStudio) {
+                      const disneyBtn = document.querySelector('.btn-studio[data-studio="disney"]');
+                      if (disneyBtn) disneyBtn.click();
+                  }
+              }
+
+              // Navigation menu unlock & display
+              if (index >= 5) {
+                  document.getElementById('floating-nav').classList.add('is-visible');
+              }
+              
+              // Highlight active nav item
+              document.querySelectorAll('.nav-item').forEach(link => {
+                  if (parseInt(link.dataset.panelTarget, 10) === index) {
+                      link.classList.add('is-active');
+                  } else {
+                      link.classList.remove('is-active');
+                  }
+              });
 
               // WOW Effects & Audio
               if (index === 4) { // Countdown
@@ -248,16 +287,16 @@ function goToPanel(index) {
                   }
               }
 
-              if (index === 5) { // Outro
+              if (index === 6) { // Outro (Outro panel index is 6)
                   const box = document.getElementById('card-explosion');
                   if (box && box.children.length === 0) { // once
                       for (let i = 0; i < 20; i++) {
-                          const c = document.createElement('div');
-                          c.textContent = ['♠','♥','♦','♣'][i%4];
-                          c.style.cssText = `position:absolute;font-size:${1.5+Math.random()*2}rem;color:${i%2===0?'var(--gold)':'var(--suit-red)'};opacity:0;left:50%;top:50%;pointer-events:none;`;
-                          box.appendChild(c);
-                          gsap.to(c, { x: (Math.random()-0.5)*600, y: (Math.random()-0.5)*400, rotation: Math.random()*720-360, opacity: 0.6, duration: 2+Math.random(), ease: "power2.out" });
-                          gsap.to(c, { opacity: 0, duration: 1, delay: 2+Math.random() });
+                           const c = document.createElement('div');
+                           c.textContent = ['♠','♥','♦','♣'][i%4];
+                           c.style.cssText = `position:absolute;font-size:${1.5+Math.random()*2}rem;color:${i%2===0?'var(--gold)':'var(--suit-red)'};opacity:0;left:50%;top:50%;pointer-events:none;`;
+                           box.appendChild(c);
+                           gsap.to(c, { x: (Math.random()-0.5)*600, y: (Math.random()-0.5)*400, rotation: Math.random()*720-360, opacity: 0.6, duration: 2+Math.random(), ease: "power2.out" });
+                           gsap.to(c, { opacity: 0, duration: 1, delay: 2+Math.random() });
                       }
                   }
               }
@@ -268,13 +307,14 @@ function goToPanel(index) {
               // Hide button if last panel
               if (currentPanelIndex === totalPanels - 1) {
                   gsap.to(nextBtn, { opacity: 0, duration: 0.5, onComplete: () => nextBtn.style.display = 'none' });
+              } else {
+                  // Make sure button is visible if navigating back
+                  gsap.to(nextBtn, { opacity: 1, duration: 0.3, onStart: () => nextBtn.style.display = 'block' });
               }
           }
         }
     );
 }
-
-// WOW #1 (Reality Warp) is now handled directly by the first hat click.
 
 // Hat button logic (Living entity)
 nextBtn.addEventListener('mousemove', (e) => {
@@ -324,7 +364,7 @@ nextBtn.addEventListener('click', () => {
     }
 });
 
-// ─── COUNTDOWN WITH EMOTIONAL GLITCH ───
+// ─── COUNTDOWN WITH DYNAMIC SECONDS ───
 const eventDate = new Date('2026-06-21T16:00:00').getTime();
 let prevMin = '';
 function updateCountdown() {
@@ -333,9 +373,11 @@ function updateCountdown() {
     const days = String(Math.floor(d/86400000)).padStart(2,'0');
     const hrs = String(Math.floor((d%86400000)/3600000)).padStart(2,'0');
     const mins = String(Math.floor((d%3600000)/60000)).padStart(2,'0');
+    const secs = String(Math.floor((d%60000)/1000)).padStart(2,'0');
     
     document.getElementById('days').textContent = days;
     document.getElementById('hours').textContent = hrs;
+    
     const mEl = document.getElementById('minutes');
     if (mins !== prevMin) {
         mEl.classList.add('glitch');
@@ -343,9 +385,10 @@ function updateCountdown() {
         prevMin = mins;
     }
     mEl.textContent = mins;
+    document.getElementById('seconds').textContent = secs;
 
     // Emotional scale (distortion when < 10 days)
-    if (d < 864000000) { // 10 days
+    if (d < 864000000) {
         const watch = document.getElementById('pocket-watch');
         if (watch) watch.style.filter = "drop-shadow(0 0 15px rgba(139, 26, 26, 0.4)) contrast(1.2)";
     }
@@ -379,6 +422,82 @@ document.querySelectorAll('.btn-studio').forEach(btn => {
         gsap.to(grid, { opacity: 1, y: 0, duration: 0.5 });
     });
 });
+
+
+// ─── GIFTS & PIX MODAL INTERACTION ───
+const giftRows = document.querySelectorAll('.gift-row');
+const pixModal = document.getElementById('pix-modal');
+const pixCloseBtn = document.getElementById('pix-close-btn');
+const pixGiftName = document.getElementById('pix-gift-name');
+const pixGiftPrice = document.getElementById('pix-gift-price');
+const pixCopyBtn = document.getElementById('pix-copy-btn');
+const pixToast = document.getElementById('pix-toast');
+
+const pixCodes = {
+    "Xícara de Porcelana": "00020101021126580014BR.GOV.BCB.PIX0136alice.save.the.date.pix@gmail.com520400005303986540550.005802BR5925Alice Save The Date6009Sao Paulo62070503***6304ABCD",
+    "Bule Encantado": "00020101021126580014BR.GOV.BCB.PIX0136alice.save.the.date.pix@gmail.com5204000053039865406150.005802BR5925Alice Save The Date6009Sao Paulo62070503***6304EFGH",
+    "Cartola do Chapeleiro": "00020101021126580014BR.GOV.BCB.PIX0136alice.save.the.date.pix@gmail.com5204000053039865406500.005802BR5925Alice Save The Date6009Sao Paulo62070503***6304IJKL"
+};
+
+giftRows.forEach(row => {
+    row.addEventListener('click', () => {
+        const name = row.querySelector('.gift-name').textContent;
+        const price = row.querySelector('.gift-price').textContent;
+        
+        pixGiftName.textContent = name;
+        pixGiftPrice.textContent = price;
+        pixModal.classList.add('is-active');
+        
+        gsap.fromTo('.pix-modal__card', 
+            { scale: 0.85, opacity: 0 }, 
+            { scale: 1, opacity: 1, duration: 0.4, ease: "back.out(1.5)" }
+        );
+    });
+});
+
+pixCloseBtn.addEventListener('click', () => {
+    gsap.to('.pix-modal__card', {
+        scale: 0.85, opacity: 0, duration: 0.3, ease: "power2.in",
+        onComplete: () => pixModal.classList.remove('is-active')
+    });
+});
+
+pixModal.addEventListener('click', (e) => {
+    if (e.target === pixModal) {
+        pixCloseBtn.click();
+    }
+});
+
+pixCopyBtn.addEventListener('click', () => {
+    const name = pixGiftName.textContent;
+    const code = pixCodes[name] || pixCodes["Xícara de Porcelana"];
+    
+    navigator.clipboard.writeText(code).then(() => {
+        pixToast.classList.add('is-visible');
+        pixCopyBtn.textContent = 'Copiado!';
+        pixCopyBtn.style.background = 'var(--white)';
+        pixCopyBtn.style.color = 'var(--black)';
+        setTimeout(() => {
+            pixToast.classList.remove('is-visible');
+            pixCopyBtn.textContent = 'Copiar Código Pix';
+            pixCopyBtn.style.background = 'var(--gold)';
+            pixCopyBtn.style.color = 'var(--black)';
+        }, 2000);
+    }).catch(err => {
+        console.error('Failed to copy Pix code: ', err);
+    });
+});
+
+
+// ─── FLOATING NAV MENU CLICKS ───
+document.querySelectorAll('.nav-item').forEach(link => {
+    link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const targetIndex = parseInt(link.dataset.panelTarget, 10);
+        goToPanel(targetIndex);
+    });
+});
+
 
 // ─── RSVP ───
 document.getElementById('rsvp-form').addEventListener('submit', (e) => {

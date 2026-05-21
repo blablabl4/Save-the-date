@@ -24,6 +24,19 @@
     <!-- Vignette -->
     <div class="vignette"></div>
 
+    <!-- Floating Header Navigation -->
+    <nav class="floating-nav" id="floating-nav">
+        <a href="#" class="nav-item font-display" data-panel-target="1">Regras</a>
+        <span class="nav-separator">&middot;</span>
+        <a href="#" class="nav-item font-display" data-panel-target="2">Inspirações</a>
+        <span class="nav-separator">&middot;</span>
+        <a href="#" class="nav-item font-display" data-panel-target="3">Presentes</a>
+        <span class="nav-separator">&middot;</span>
+        <a href="#" class="nav-item font-display" data-panel-target="4">Tempo</a>
+        <span class="nav-separator">&middot;</span>
+        <a href="#" class="nav-item font-display" data-panel-target="5">Presença</a>
+    </nav>
+
     <!-- Spiral Background (visible during scroll) -->
     <div class="spiral-bg" id="spiral-bg">
         <img src="spiral_bg.jpg" alt="" class="spiral-bg__img">
@@ -39,7 +52,6 @@
     <audio id="bg-music" loop preload="none">
         <source src="background_music.mp3" type="audio/mpeg">
     </audio>
-    <button class="audio-toggle font-display" id="audio-toggle" aria-label="Toggle Audio">♪</button>
 
     <!-- 3D Canvas -->
     <canvas class="tunnel-canvas" id="tunnel-canvas"></canvas>
@@ -143,6 +155,10 @@
                             <span class="timer__digit font-display text-cinematic" id="minutes">00</span>
                             <span class="timer__label font-body">Minutos</span>
                         </div>
+                        <div class="timer__block">
+                            <span class="timer__digit font-display text-cinematic" id="seconds">00</span>
+                            <span class="timer__label font-body">Segundos</span>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -176,6 +192,53 @@
 
         </div>
     </main>
+
+    <!-- Pix Payment Modal -->
+    <div class="pix-modal" id="pix-modal">
+        <div class="pix-modal__card">
+            <button class="pix-modal__close" id="pix-close-btn">&times;</button>
+            <h3 class="pix-modal__title font-display">Presentear</h3>
+            <p class="pix-modal__subtitle font-body" id="pix-gift-name">Xícara de Porcelana</p>
+            <div class="pix-modal__qr-container">
+                <svg class="pix-modal__qr" viewBox="0 0 100 100">
+                    <rect width="100" height="100" fill="none"/>
+                    <path d="M10 10h20v5H15v15h-5zm0 80h20v-5H15v-15h-5zm80 0h-20v-5h15v-15h5zm0-80h-20v5h15v15h5z" fill="var(--gold)"/>
+                    <rect x="20" y="20" width="15" height="15" fill="var(--gold)"/>
+                    <rect x="65" y="20" width="15" height="15" fill="var(--gold)"/>
+                    <rect x="20" y="65" width="15" height="15" fill="var(--gold)"/>
+                    <rect x="42" y="20" width="5" height="5" fill="var(--gold)"/>
+                    <rect x="42" y="30" width="5" height="5" fill="var(--gold)"/>
+                    <rect x="52" y="25" width="5" height="5" fill="var(--gold)"/>
+                    <rect x="20" y="45" width="5" height="5" fill="var(--gold)"/>
+                    <rect x="30" y="45" width="5" height="5" fill="var(--gold)"/>
+                    <rect x="45" y="45" width="5" height="5" fill="var(--gold)"/>
+                    <rect x="55" y="45" width="5" height="5" fill="var(--gold)"/>
+                    <rect x="65" y="45" width="5" height="5" fill="var(--gold)"/>
+                    <rect x="75" y="45" width="5" height="5" fill="var(--gold)"/>
+                    <rect x="45" y="55" width="5" height="5" fill="var(--gold)"/>
+                    <rect x="55" y="55" width="5" height="5" fill="var(--gold)"/>
+                    <rect x="65" y="55" width="5" height="5" fill="var(--gold)"/>
+                    <rect x="75" y="55" width="5" height="5" fill="var(--gold)"/>
+                    <rect x="45" y="65" width="5" height="5" fill="var(--gold)"/>
+                    <rect x="55" y="65" width="5" height="5" fill="var(--gold)"/>
+                    <rect x="45" y="75" width="5" height="5" fill="var(--gold)"/>
+                    <rect x="55" y="75" width="5" height="5" fill="var(--gold)"/>
+                    <rect x="65" y="75" width="5" height="5" fill="var(--gold)"/>
+                    <rect x="75" y="75" width="5" height="5" fill="var(--gold)"/>
+                </svg>
+            </div>
+            <div class="pix-modal__info">
+                <span class="pix-modal__label font-body">Valor do Presente</span>
+                <span class="pix-modal__value font-display" id="pix-gift-price">R$ 50,00</span>
+            </div>
+            <div class="pix-modal__key-container">
+                <span class="pix-modal__key-label font-body">Chave Pix (E-mail)</span>
+                <span class="pix-modal__key font-display" id="pix-key-val">alice.save.the.date.pix@gmail.com</span>
+            </div>
+            <button class="btn-submit font-display" id="pix-copy-btn">Copiar Código Pix</button>
+            <span class="pix-modal__toast font-body" id="pix-toast">Código Copiado! ☕</span>
+        </div>
+    </div>
 
     <!-- Scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.min.js"></script>
